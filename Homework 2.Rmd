@@ -33,7 +33,7 @@ In 2022, India had the most cases with 103,819 new cases reported. Looking at ra
 lep$pop100<- lep$Population/100000
 lep$casesper100<- lep$New_Cases/lep$pop100
 hist(lep$casesper100, main=" Histogram of Leoprosy Cases",xlab="Cases per")
-round(summary(lep$casesper100),2)
+round(summary(lep$casesper100),1)
 ```
 
 The histogram above shows a very right skewed distribution with most countries reporting only 0-5 cases of leprosy per 100k people. The attached summary includes the minimum, Quartile 1, Median, Mean, 3rd Quartile, and The maximum values of the distribution. 28 countries reported no new leprosy cases in 2022.
