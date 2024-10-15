@@ -1,0 +1,84 @@
+---
+title: "Homework 2"
+author: "Jordan Atkins"
+date: "2024-09-17"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+## This report takes examines newly reported leprosy cases in 2022 using data from the World Health Organization.
+
+```{r echo=FALSE}
+lep <- read.csv('Homework2_leprosy.csv')
+
+
+```
+
+# Question 1
+
+### Which country had the highest number of new leprosy cases in 2022? Why is it not a fair comparison to look at the raw number of cases when comparing prevalence of the disease across different countries?
+
+```{r echo=FALSE}
+lep[which.max(lep$New_Cases),]
+```
+
+In 2022, India had the most cases with 103,819 new cases reported. Looking at raw numbers may be unfair because it does not account for population and access to adequate healthcare.
+
+# Question 2
+
+### Create a new variable in the dataset that provides the leprosy cases per 100K people in each country. Graph this new variable’s distribution and provide the relevant summary statistics inline within a short paragraph describing the distribution.
+
+```{r echo=FALSE}
+lep$pop100<- lep$Population/100000
+lep$casesper100<- lep$New_Cases/lep$pop100
+hist(lep$casesper100, main=" Histogram of Leoprosy Cases",xlab="Cases per")
+round(summary(lep$casesper100),2)
+```
+
+The histogram above shows a very right skewed distribution with most countries reporting only 0-5 cases of leprosy per 100k people. The attached summary includes the minimum, Quartile 1, Median, Mean, 3rd Quartile, and The maximum values of the distribution. 28 countries reported no new leprosy cases in 2022.
+
+# Question 3
+
+### We want to compare cases per 100K across the different regions in this dataset. In a single plot output, create a graph that shows the distribution of cases per 100K split by region. Output a nicely formatted table that provides the region name, number of countries in that region, and the median cases per 100K
+
+```{r echo=FALSE}
+library(kableExtra) 
+boxplot(lep$casesper100~lep$Region, main="Leprosy Cases By Region", xlab="Region", ylab="Cases per 100k", ylim=c(0,10))
+ 
+lep_region<-table(lep$Region)
+
+cases_region<-aggregate(casesper100~Region, data=lep, median)
+
+mytable<- data.frame(lep_region,cases_region$casesper100)
+
+colnames(mytable) <- c('Region','Number of Countries', 'Median')
+
+mytable$'Median' <- round(mytable$'Median', 2)
+
+kable_classic(kbl(mytable,caption = "Leprosy Cases Among Different Region"),full_width = FALSE)
+library(kableExtra) 
+
+```
+
+The box and whisker plot above displays the distribution of Leprosy cases split By Region. Asia is seen to have the most cases of leprosy per 100k.
+
+The table shows the number of countries in each region and the median cases per 100k people.
+
+# Question 4
+
+### Investigate the relationship between cases per 100K and one of the other variables in the dataset (other than region) by making the appropriate bivariate graph and providing the relevant summary statistic inline within a short paragraph describing the relationship.
+
+```{r echo=FALSE}
+plot(lep$Land_Area,lep$casesper100, xlim=c(0,400000), pch=19, main="Leprosy Cases by Land Area", xlab="Land Area (sq ft)", ylab= "Cases per 100k")
+options(scipen=999)
+round(cor(lep$casesper100, lep$Land_Area, use="complete.obs"),2)
+```
+
+To determine if land area is related to leprosy cases per 100k people, I created a scatter plot to display the relationship. As seen in the graph, there is little to no connection between the land size of a country and its cases of leprosy. This can also be proven by the correlation coefficient of `r round(cor(lep$casesper100, lep$Land_Area, use="complete.obs"),2)`
+
+# Question 5
+
+## Conclusion
+
+When investigating cases of leprosy in 2022, we first created a histogram display the distribution of the amount of cases per 100k. This graph showed a skewed distribution with a vast majority of countries reporting 0-5 new cases in 2022. We then split the countries by region and determined the distribution of each region's number of cases per 100k people using a box plot. This plot revealed that Asia as a region had the most cases per 100k. India in particular had the most cases in the world in 2022 at 103819. So we can infer that frequency of leprosy is dependent on the region the data comes from. We then investigated if the size of a country was connected to amount of leprosy cases. A scatter plot displaying the cases of leprosy by land area shows little relationship. In conclusion, the emergence of new leprosy cases could be dependent on the region that is being observed. For more information visit the [World Health Organization Website](https://www.who.int/data/gho/data/indicators/indicator-details/GHO/number-of-new-leprosy-cases)
